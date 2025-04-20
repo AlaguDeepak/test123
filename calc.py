@@ -1,4 +1,5 @@
 import tkinter as tk
+import math  # Importing math for factorial function
 
 LARGE_FONT_STYLE = ("Arial", 40, "bold")
 SMALL_FONT_STYLE = ("Arial", 16)
@@ -56,6 +57,7 @@ class Calculator:
         self.create_equals_button()
         self.create_square_button()
         self.create_sqrt_button()
+        self.create_factorial_button()  # Add factorial button
 
     def create_display_labels(self):
         total_label = tk.Label(self.display_frame, text=self.total_expression, anchor=tk.E, bg=LIGHT_GRAY,
@@ -110,7 +112,10 @@ class Calculator:
         button.grid(row=0, column=1, sticky=tk.NSEW)
 
     def square(self):
-        self.current_expression = str(eval(f"{self.current_expression}**2"))
+        try:
+            self.current_expression = str(eval(f"{self.current_expression}**2"))
+        except:
+            self.current_expression = "Error"
         self.update_label()
 
     def create_square_button(self):
@@ -119,7 +124,10 @@ class Calculator:
         button.grid(row=0, column=2, sticky=tk.NSEW)
 
     def sqrt(self):
-        self.current_expression = str(eval(f"{self.current_expression}**0.5"))
+        try:
+            self.current_expression = str(eval(f"{self.current_expression}**0.5"))
+        except:
+            self.current_expression = "Error"
         self.update_label()
 
     def create_sqrt_button(self):
@@ -127,12 +135,27 @@ class Calculator:
                            borderwidth=0, command=self.sqrt)
         button.grid(row=0, column=3, sticky=tk.NSEW)
 
+    def factorial(self):
+        try:
+            value = int(float(self.current_expression))
+            if value < 0:
+                self.current_expression = "Error"
+            else:
+                self.current_expression = str(math.factorial(value))
+        except:
+            self.current_expression = "Error"
+        self.update_label()
+
+    def create_factorial_button(self):
+        button = tk.Button(self.buttons_frame, text="x!", bg=OFF_WHITE, fg=LABEL_COLOR,
+                           font=DEFAULT_FONT_STYLE, borderwidth=0, command=self.factorial)
+        button.grid(row=0, column=0, sticky=tk.NSEW)
+
     def evaluate(self):
         self.total_expression += self.current_expression
         self.update_total_label()
         try:
             self.current_expression = str(eval(self.total_expression))
-
             self.total_expression = ""
         except Exception as e:
             self.current_expression = "Error"
